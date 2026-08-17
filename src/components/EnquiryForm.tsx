@@ -18,11 +18,21 @@ export default function EnquiryForm({ coursePreselect = "" }: { coursePreselect?
     e.preventDefault();
     setStatus("submitting");
 
-    // Simulate API call for now (Phase 3 will wire this up to Neon)
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) throw new Error("Failed to submit");
+      
       setStatus("success");
       setFormData({ name: "", mobile_number: "", course_interested: "", preferred_batch: "", qualification: "", message: "" });
-    }, 1000);
+    } catch (error) {
+      setStatus("error");
+      alert("Something went wrong. Please try calling us instead.");
+    }
   };
 
   if (status === "success") {
